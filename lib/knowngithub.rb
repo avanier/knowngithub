@@ -1,16 +1,30 @@
 require 'ipaddr'
 require 'json'
 require 'net/http'
+require 'uri'
+
 require 'net/ssh'
 require 'nokogiri'
-require 'open-uri'
 require "knowngithub/version"
 
 module Knowngithub
+  def self.safe_call(url)
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+
+    request = Net::HTTP::Get.new(uri.request_uri)
+
+    http.request(request)
+  end
+
   def self.fingerprints
-    output = Nokogiri::HTML(open("https://help.github.com/articles/github-s-ssh-key-fingerprints/"))
+    pattern = /^(sha256:[a-z0-9\+\/]{43})|([0-9a-f\:]{32,47})$/i
+    res = self.safe_call('https://help.github.com/articles/github-s-ssh-key-fingerprints/')
+    output = Nokogiri::HTML(res.body)
     fields = output.xpath("//code")
-    return fields.children.map(&:content)
+    return fields.children.map(&:content).select{ |x| pattern =~ x }
   end
 
   def self.session
@@ -34,17 +48,17 @@ module Knowngithub
   end
 
   def self.known_host
-    host = self.host
-    return [ host["host_as_string"], host["ssh_type"], host["base64_key"] ].join('')
+    h = self.host
+    return [ h["host_as_string"], h["ssh_type"], h["base64_key"] ].join(' ')
   end
 
   def self.known_hosts
-    host = self.host
-    cidr_ranges = JSON.parse(Net::HTTP.get(URI('https://api.github.com/meta')))["git"]
+    h = self.host
+    cidr_ranges = JSON.parse(self.safe_call('https://api.github.com/meta').body)["git"]
     known_hosts = []
     cidr_ranges.each do |range|
       IPAddr.new(range).to_range.to_a.map { |a| a.to_s }.each do |ip|
-        known_hosts << 'github.com,' + ip + ' ' + host["base64_key"]
+        known_hosts << 'github.com,' + ip + ' ' + h["base64_key"]
       end
     end
     return known_hosts
