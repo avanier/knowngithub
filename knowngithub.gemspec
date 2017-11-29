@@ -1,4 +1,3 @@
-
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "knowngithub/version"
@@ -9,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Alexis Vanier"]
   spec.email         = ["alexis@amonoid.io"]
 
-  spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = "Don't blindly trust GitHub hosts"
+  spec.description   = spec.summary
+  spec.homepage      = "https://github.com/avanier/knowngithub"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -32,4 +31,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_runtime_dependency "net-ssh", "~> 4.2"
+  spec.add_runtime_dependency "nokogiri", "~> 1.8"
 end

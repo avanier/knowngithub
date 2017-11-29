@@ -1,0 +1,26 @@
+PATH
+  remote: .
+  specs:
+    knowngithub (0.1.0)
+      net-ssh (~> 4.2)
+      nokogiri (~> 1.8)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    mini_portile2 (2.3.0)
+    net-ssh (4.2.0)
+    nokogiri (1.8.1)
+      mini_portile2 (~> 2.3.0)
+    rake (10.5.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.16)
+  knowngithub!
+  rake (~> 10.0)
+
+BUNDLED WITH
+   1.16.0
