@@ -1,8 +1,8 @@
 # Knowngithub
 
-> ### _"It's not paranoia if they're out to get you."_
+> ### _“Some people think this is paranoia, but it isn't. Paranoids only think everyone is out to get them. Wizards know it.”_
 >
-> _- Some Wise Man_
+> _&mdash; Terry Pratchett, Sourcery_
 
 Have you hit the problem where you're trying to bootstrap new containers or VMs and `git` will refuse to clone stuff because it _(rightfully)_ doesn't automatically trust GitHub? This gem answers the scenario where you believe that manually burning the `known_hosts` into whatever you're making doesn't scale, and blindly trusting any host to provide you with legitimiate code is insufficient.
 
