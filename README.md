@@ -4,11 +4,15 @@
 >
 > _&mdash; Terry Pratchett, Sourcery_
 
-Have you hit the problem where you're trying to bootstrap new containers or VMs and `git` will refuse to clone stuff because it _(rightfully)_ doesn't automatically trust GitHub? This gem answers the scenario where you believe that manually burning the `known_hosts` into whatever you're making doesn't scale, and blindly trusting any host to provide you with legitimiate code is insufficient.
+Have you hit the problem where you're trying to bootstrap new containers or VMs and `git` will refuse to clone stuff because it doesn't automatically trust GitHub?
+
+This gem answers the scenario where you believe that manually burning the `known_hosts` into whatever you're making doesn't scale, and blindly trusting any host to provide you with legitimiate code is insufficient.
 
 While the solution is not elegant, and the implementation is fragile, I'm hoping it proves the following point : a diagonal chain of trust is better than blind trust.
 
 The idea behind this gem is that by calling GitHub's web pages and API through https, the answers will be certified through it's CA and cannot be tampered with unbeknownst to us. Thus, one can call GitHub's SSH endpoint, and verify its key fingerprint is valid against a dynamic trustable source of truth to protect against man-in-the-middle attacks on `git` operations.
+
+This gem will return one or a list of trusted hosts in a format appropriate for `.ssh/known_hosts` files.
 
 ## Installation
 
