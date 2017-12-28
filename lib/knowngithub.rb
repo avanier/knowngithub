@@ -8,6 +8,10 @@ require 'nokogiri'
 require "knowngithub/version"
 
 module Knowngithub
+  # Make a call enforcing the strict use of SSL.
+  # @param [String] url A full url like `https://help.github.com`
+  # @return [Net::HTTP] Return the full Net::HTTP object of the response.
+  # @since 0.1.0
   def self.safe_call(url)
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
@@ -19,6 +23,9 @@ module Knowngithub
     http.request(request)
   end
 
+  # Queries and parses the GitHub help page for the SSH key fingerprints.
+  # @return [Array<String>] SSH key fingerprints as an array of strings.
+  # @since 0.1.0
   def self.fingerprints
     pattern = /^(sha256:[a-z0-9\+\/]{43})|([0-9a-f\:]{32,47})$/i
     res = self.safe_call('https://help.github.com/articles/github-s-ssh-key-fingerprints/')
@@ -27,12 +34,19 @@ module Knowngithub
     return fields.children.map(&:content).select{ |x| pattern =~ x }
   end
 
+  # Instantiates a Net::SSH session with GitHub to get the host key and closes it.
+  # @return [Net:SSH] Returns a closed Net::SSH session
+  # @since 0.1.0
   def self.session
     s = Net::SSH::Transport::Session.new('github.com', { :verify_host_key => true })
     s.close
     s
   end
 
+  # Composes a hash with the properties required for composing a known host entry
+  # @return [Hash] Returns a hash object with all of the needed components to compose a `known_hosts` file
+  # @raise [SecurityError] If the host keys fail validation or if the https call fails, this will be raised.
+  # @since 0.1.0
   def self.host
     s = self.session
     if self.fingerprints.any?{|f| f == s.host_keys.first.fingerprint}
@@ -47,11 +61,17 @@ module Knowngithub
     end
   end
 
+  # Composes a known_hosts entry for the fqdn only
+  # @return [String] Returns a `known_hosts` entry for the fqdn only with no ip address binding as a string.
+  # @since 0.1.0
   def self.known_host
     h = self.host
     return [ h["host_as_string"], h["ssh_type"], h["base64_key"] ].join(' ')
   end
 
+  # Composes a block of text ready for appending to a known_hosts file
+  # @return [String] Returns a `known_hosts` multiline string enunciating every known IP GitHub may serve SSH on.
+  # @since 0.1.0
   def self.known_hosts
     h = self.host
     cidr_ranges = JSON.parse(self.safe_call('https://api.github.com/meta').body)["git"]
