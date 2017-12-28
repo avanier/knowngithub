@@ -69,8 +69,8 @@ module Knowngithub
     return [ h["host_as_string"], h["ssh_type"], h["base64_key"] ].join(' ')
   end
 
-  # Composes a block of text ready for appending to a known_hosts file
-  # @return [String] Returns a `known_hosts` multiline string enunciating every known IP GitHub may serve SSH on.
+  # Calls the `/meta` endpoint on GitHub's API via a safe https call and composes an array of entries ready for appending to a known_hosts file.
+  # @return [Array<String>] Returns an array of strings enunciating `known_hosts` entries for every known IP GitHub may serve SSH on.
   # @since 0.1.0
   def self.known_hosts
     h = self.host
