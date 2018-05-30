@@ -78,7 +78,7 @@ module Knowngithub
     known_hosts = []
     cidr_ranges.each do |range|
       IPAddr.new(range).to_range.to_a.map(&:to_s).each do |ip|
-        known_hosts << 'github.com,' + ip + ' ' + h['base64_key']
+        known_hosts << ["github.com,#{ip}", h['ssh_type'], h['base64_key']].join(' ')
       end
     end
     known_hosts
