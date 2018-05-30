@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    knowngithub (0.1.0)
+    knowngithub (0.2.0)
       net-ssh (~> 4.2)
       nokogiri (~> 1.8)
       thor (~> 0.20)
