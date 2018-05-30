@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+require 'knowngithub'
+require 'thor'
+
+module Application
+  # Thor class for CLI doage.
+  # @return [Null]
+  # @since 0.2.0
+  class CLI < Thor
+    desc 'hosts', 'writes out a list of known hosts to a target file'
+    def hosts(target)
+      knownhosts = Knowngithub.known_hosts.sort { |x, y| x <=> y }
+      File.open(target, 'w') do |file|
+        file.puts(knownhosts.join("\n"))
+      end
+      STDERR.puts "Wrote #{knownhosts.length} hosts to #{target}"
+    end
+  end
+end
+
+Application::CLI.start(ARGV)
