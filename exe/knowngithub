@@ -8,12 +8,17 @@ module Application
   # @since 0.2.0
   class CLI < Thor
     desc 'hosts', 'writes out a list of known hosts to a target file'
-    def hosts(target)
+    def hosts(target=nil)
       knownhosts = Knowngithub.known_hosts.sort { |x, y| x <=> y }
-      File.open(target, 'w') do |file|
-        file.puts(knownhosts.join("\n"))
+
+      if target
+        File.open(target, 'w') do |file|
+          file.puts(knownhosts.join("\n"))
+        end
+        STDERR.puts "Wrote #{knownhosts.length} hosts to #{target}"
+      else
+        $stdout << knownhosts.join("\n")
       end
-      STDERR.puts "Wrote #{knownhosts.length} hosts to #{target}"
     end
   end
 end
