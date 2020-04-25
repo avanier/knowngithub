@@ -28,7 +28,7 @@ module Knowngithub
   # @since 1.0.0
   def self.fingerprints
     pattern = /^(sha256:[a-z0-9\+\/]{43})|([0-9a-f\:]{32,47})$/i
-    res = safe_call('https://help.github.com/en/articles/githubs-ssh-key-fingerprints')
+    res = safe_call('https://help.github.com/en/github/authenticating-to-github/githubs-ssh-key-fingerprints')
 
     output = Nokogiri::HTML(res.body)
     fields = output.xpath('//code')
